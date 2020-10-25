@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.StreamSupport;
 
@@ -14,7 +15,7 @@ import com.bl.creatingJar.CSVBuilderFactory;
 import com.bl.creatingJar.ICSVBuilder;
 
 public class CensusAnalyser {
-	
+
 	// validation check of the file using regex
 	public boolean checkValidityOfFile(String csvFilePath) {
 		String filePattern = "^([a-z A-Z 0-9]+).csv$";
@@ -35,8 +36,8 @@ public class CensusAnalyser {
 		isFileValid(csvFilePath);
 		try (Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));) {
 			ICSVBuilder csvBuilder = CSVBuilderFactory.createCSVBuilder();
-			Iterator<IndiaCensusCSV> censusCSVIterator = csvBuilder.getCSVFileIterator(reader, IndiaCensusCSV.class);
-			return this.getCount(censusCSVIterator);
+			List<IndiaCensusCSV> censusCSVList = csvBuilder.getCSVFileList(reader, IndiaCensusCSV.class);
+			return censusCSVList.size();
 		} catch (IOException e) {
 			throw new CensusAnalyserException(e.getMessage(),
 					CensusAnalyserException.ExceptionType.CENSUS_FILE_PROBLEM);
