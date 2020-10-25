@@ -80,9 +80,7 @@ public class CensusAnalyser<E> {
 
 	// sorting the list according to states name
 	public String getStateWiseSortedCensusData() throws CensusAnalyserException {
-		if (censusCSVList == null || censusCSVList.size() == 0) {
-			throw new CensusAnalyserException("No csv data", CensusAnalyserException.ExceptionType.NO_CSV_DATA);
-		}
+		checkFileNullOrNot();
 		Comparator<IndiaCensusCSV> censusComparator = Comparator.comparing(census -> census.state);
 		this.sort(censusCSVList, censusComparator);
 		String sortedStateCensusJson = new Gson().toJson(censusCSVList);
@@ -102,9 +100,7 @@ public class CensusAnalyser<E> {
 
 	// sorting list in desecending order according to population
 	public String getPopulationWiseSortedCensusData() throws CensusAnalyserException {
-		if (censusCSVList == null || censusCSVList.size() == 0) {
-			throw new CensusAnalyserException("No csv data", CensusAnalyserException.ExceptionType.NO_CSV_DATA);
-		}
+		checkFileNullOrNot();
 		Comparator<IndiaCensusCSV> censusComparator = Comparator.comparing(census -> census.population);
 		this.sort(censusCSVList, censusComparator);
 		Collections.reverse(censusCSVList);
@@ -114,9 +110,7 @@ public class CensusAnalyser<E> {
 
 	// sorting list in descending order according to population density
 	public String getPopulationDensityWiseSortedCensusData() throws CensusAnalyserException {
-		if (censusCSVList == null || censusCSVList.size() == 0) {
-			throw new CensusAnalyserException("No csv data", CensusAnalyserException.ExceptionType.NO_CSV_DATA);
-		}
+		checkFileNullOrNot();
 		Comparator<IndiaCensusCSV> censusComparator = Comparator.comparing(census -> census.densityPerSqKm);
 		this.sort(censusCSVList, censusComparator);
 		Collections.reverse(censusCSVList);
@@ -124,6 +118,22 @@ public class CensusAnalyser<E> {
 		return sortedStatePopulationDensityCensusJson;
 	}
 
+	// sorting the file by area in descending order
+	public String getStateAreaWiseSortedCensusData() throws CensusAnalyserException{
+		checkFileNullOrNot();
+		Comparator<IndiaCensusCSV> censusComparator = Comparator.comparing(census -> census.areaInSqKm);
+		this.sort(censusCSVList, censusComparator);
+		Collections.reverse(censusCSVList);
+		String sortedStateAreaCensusJson = new Gson().toJson(censusCSVList);
+		return sortedStateAreaCensusJson;
+	}
+
+	// catching exception if file is null
+	public void checkFileNullOrNot() throws CensusAnalyserException{
+		if (censusCSVList == null || censusCSVList.size() == 0) {
+			throw new CensusAnalyserException("No csv data", CensusAnalyserException.ExceptionType.NO_CSV_DATA);
+		}
+	}
 	// sorting the list by bubble sort technique
 	private <E> void sort(List<E> list, Comparator<E> censusComparator) {
 		for (int i = 0; i < list.size() - 1; i++) {
